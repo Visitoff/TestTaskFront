@@ -6,6 +6,7 @@
     <title>Unity WebGL Player | TestTaskTelegram</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -24,7 +25,9 @@
       </div>
     </div>
     <script>
-
+       let tg = window.Telegram.WebApp; 
+       console.log("tg init");
+       console.log(tg.initData);
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");

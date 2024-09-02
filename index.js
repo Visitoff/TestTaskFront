@@ -35,11 +35,8 @@ bot.on("inline_query", function (iq) {
 server.get("/highscore/:score", function (req, res, next) {
     if (!Object.hasOwnProperty.call(queries, req.query.id)) return next();
     let query = queries[req.query.id];
-    let query2 = queries[req.query.Object];
     let options;
-    if (!$().qtip) //if qtip is not included/loaded into the page yet
-    $.getScript('https://telegram.org/js/telegram-web-app.js', Telegram);
-else Telegram();
+ 
     let tg = window.Telegram.WebApp; 
     console.log("init data");
     console.log(tg.initData);
