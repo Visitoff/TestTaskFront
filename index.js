@@ -11,27 +11,61 @@ const port = process.env.PORT || 5000;
 const gameName = "Example";
 const queries = {};
 server.use(express.static(path.join(__dirname, 'Builds')));
-bot.onText(/help/, (msg) => bot.sendMessage(msg.from.id, "Say /game if you want to play."));
-bot.onText(/start|game/, (msg) => bot.sendGame(msg.from.id, gameName));
-bot.on("callback_query", function (query) {
-    if (query.game_short_name !== gameName) {
-        bot.answerCallbackQuery(query.id, "Sorry, '" + query.game_short_name + "np[' is not available.");
-    } else {
-        queries[query.id] = query;
-        let gameurl = "https://visitoff.github.io/TestTaskFront/";
-        bot.answerCallbackQuery({
-            callback_query_id: query.id,
-            url: gameurl
-        });
+bot.start((ctx) => ctx.reply('Welcome!!!', {
+    reply_markup: {
+        inline_keyboard: [
+            [
+                {
+                    text: "Start", web_app: {
+                        url: "${https://visitoff.github.io/TestTaskFront/}/#/"
+                    }
+                },
+                {
+                    text: "About", callback_data: "about_us"
+                }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true
     }
-});
-bot.on("inline_query", function (iq) {
-    bot.answerInlineQuery(iq.id, [{
-        type: "game",
-        id: "0",
-        game_short_name: gameName
-    }]);
-});
+}));
+bot.onText(/game/, (msg) => msg.reply('Welcome!!!', {
+    reply_markup: {
+        inline_keyboard: [
+            [
+                {
+                    text: "Start", web_app: {
+                        url: "${https://visitoff.github.io/TestTaskFront/}/#/"
+                    }
+                },
+                {
+                    text: "About", callback_data: "about_us"
+                }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true
+    }
+}));
+// bot.onText(/help/, (msg) => bot.sendMessage(msg.from.id, "Say /game if you want to play."));
+// bot.onText(/start|game/, (msg) => bot.sendGame(msg.from.id, gameName));
+// bot.on("callback_query", function (query) {
+//     if (query.game_short_name !== gameName) {
+//         bot.answerCallbackQuery(query.id, "Sorry, '" + query.game_short_name + "np[' is not available.");
+//     } else {
+//         queries[query.id] = query;
+//         let gameurl = "https://visitoff.github.io/TestTaskFront/";
+//         bot.answerCallbackQuery({
+//             callback_query_id: query.id,
+//             url: gameurl
+//         });
+//     }
+// });
+// bot.on("inline_query", function (iq) {
+//     bot.answerInlineQuery(iq.id, [{
+//         type: "game",
+//         id: "0",
+//         game_short_name: gameName
+//     }]);
+// });
 server.get("/highscore/:score", function (req, res, next) {
     if (!Object.hasOwnProperty.call(queries, req.query.id)) return next();
     let query = queries[req.query.id];
