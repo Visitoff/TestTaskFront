@@ -11,23 +11,23 @@ const port = process.env.PORT || 5000;
 const gameName = "Example";
 const queries = {};
 server.use(express.static(path.join(__dirname, 'Builds')));
-bot.start((ctx) => ctx.reply('Welcome!!!', {
-    reply_markup: {
-        inline_keyboard: [
-            [
-                {
-                    text: "Start", web_app: {
-                        url: "${https://visitoff.github.io/TestTaskFront/}/#/"
-                    }
-                },
-                {
-                    text: "About", callback_data: "about_us"
-                }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true
-    }
-}));
+// bot.onText((ctx) => ctx.reply('Welcome!!!', {
+//     reply_markup: {
+//         inline_keyboard: [
+//             [
+//                 {
+//                     text: "Start", web_app: {
+//                         url: "${https://visitoff.github.io/TestTaskFront/}/#/"
+//                     }
+//                 },
+//                 {
+//                     text: "About", callback_data: "about_us"
+//                 }]
+//         ],
+//         resize_keyboard: true,
+//         one_time_keyboard: true
+//     }
+// }));
 bot.onText(/game/, (msg) => msg.reply('Welcome!!!', {
     reply_markup: {
         inline_keyboard: [
