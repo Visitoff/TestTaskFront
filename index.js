@@ -28,6 +28,15 @@ server.use(express.static(path.join(__dirname, 'Builds')));
 //         one_time_keyboard: true
 //     }
 // }));
+bot.on( "inline_query", function(iq) {
+    let results = [{type: "game", id: "0", game_short_name: gameName}];
+    let promise = bot.answerInlineQuery(iq.id, results, {switch_pm_text: "Take me to the awesome bot", switch_pm_parameter: "test", cache_time: "0"});
+    promise.then(function(result) {
+        console.log(result);
+    }, function(err) {
+        console.log(err);
+    });
+});
 bot.onText(/game/, (msg) => msg.reply('Welcome!!!', {
     reply_markup: {
         inline_keyboard: [
