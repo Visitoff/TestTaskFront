@@ -1,121 +1,80 @@
-const express = require("express");
-const path = require("path");
-const TelegramBot = require("node-telegram-bot-api");
-const { Script } = require("vm");
-const TOKEN = "7289862727:AAGt3NWSecR--8VpzvxYXjwV2mUin1ApHwA";
-const server = express();
-const bot = new TelegramBot(TOKEN, {
-    polling: true
-});
-const port = process.env.PORT || 5000;
-const gameName = "Example";
-const queries = {};
-server.use(express.static(path.join(__dirname, 'Builds')));
-// bot.onText((ctx) => ctx.reply('Welcome!!!', {
-//     reply_markup: {
-//         inline_keyboard: [
-//             [
-//                 {
-//                     text: "Start", web_app: {
-//                         url: "${https://visitoff.github.io/TestTaskFront/}/#/"
-//                     }
-//                 },
-//                 {
-//                     text: "About", callback_data: "about_us"
-//                 }]
-//         ],
-//         resize_keyboard: true,
-//         one_time_keyboard: true
-//     }
-// }));
-// bot.on( "inline_query", function(iq) {
-//     let results = [{type: "game", id: "0", game_short_name: gameName}];
-//     let promise = bot.answerInlineQuery(iq.id, results, {switch_pm_text: "Take me to the awesome bot", switch_pm_parameter: "test", cache_time: "0"});
-//     promise.then(function(result) {
-//         console.log(result);
-//     }, function(err) {
-//         console.log(err);
-//     });
-// });
-// bot.onText(/game/, (msg) => msg.reply('Welcome!!!', {
-//     reply_markup: {
-//         inline_keyboard: [
-//             [
-//                 {
-//                     text: "Start", web_app: {
-//                         url: "${https://visitoff.github.io/TestTaskFront/}/#/"
-//                     }
-//                 },
-//                 {
-//                     text: "About", callback_data: "about_us"
-//                 }]
-//         ],
-//         resize_keyboard: true,
-//         one_time_keyboard: true
-//     }
-//}));
-bot.onText(/help/, (msg) => bot.sendMessage(msg.from.id, "Say /game if you want to play."));
-//bot.onText(/start|game/, (msg) => bot.sendGame(msg.from.id, gameName));
-bot.onText(/start|game/, function (msg) {
-    const opts = {
-        reply_to_message_id: msg.message_id,
-        reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: "Start", web_app: {
-                                    url: "https://visitoff.github.io/TestTaskFront/"
-                                }
-                            },
-                            {
-                                text: "About", callback_data: "about_us"
-                            }]
-                    ],
-                    resize_keyboard: true,
-                    one_time_keyboard: true
-                }
-    };
+window.addEventListener("load", function () {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("ServiceWorker.js");
+    }
+  });
+  var unityInstanceRef;
+  var unsubscribe;
+  var container = document.querySelector("#unity-container");
+  var canvas = document.querySelector("#unity-canvas");
+  var loadingBar = document.querySelector("#unity-loading-bar");
+  var progressBarFull = document.querySelector("#unity-progress-bar-full");
+  var warningBanner = document.querySelector("#unity-warning");
 
-    bot.sendMessage(msg.chat.id, "I'm a test robot", opts);
-});
-bot.on("callback_query", function (query) {
-    if (query.game_short_name !== gameName) {
-        bot.answerCallbackQuery(query.id, "Sorry, '" + query.game_short_name + "np[' is not available.");
-    } else {
-        queries[query.id] = query;
-        let gameurl = "https://visitoff.github.io/TestTaskFront/";
-        bot.answerCallbackQuery({
-            callback_query_id: query.id,
-            url: gameurl
-        });
+  // Shows a temporary message banner/ribbon for a few seconds, or
+  // a permanent error message on top of the canvas if type=='error'.
+  // If type=='warning', a yellow highlight color is used.
+  // Modify or remove this function to customize the visually presented
+  // way that non-critical warnings and error messages are presented to the
+  // user.
+  function unityShowBanner(msg, type) {
+    function updateBannerVisibility() {
+      warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
     }
-});
-bot.on("inline_query", function (iq) {
-    bot.answerInlineQuery(iq.id, [{
-        type: "game",
-        id: "0",
-        game_short_name: gameName
-    }]);
-});
-server.get("/highscore/:score", function (req, res, next) {
-    if (!Object.hasOwnProperty.call(queries, req.query.id)) return next();
-    let query = queries[req.query.id];
-    let options;
- 
-    let tg = window.Telegram.WebApp; 
-    console.log("init data");
-    console.log(tg.initData);
-    if (query.message) {
-        options = {
-            chat_id: query.message.chat.id,
-            message_id: query.message.message_id
-        };
-    } else {
-        options = {
-            inline_message_id: query.inline_message_id
-        };
+    var div = document.createElement('div');
+    div.innerHTML = msg;
+    warningBanner.appendChild(div);
+    if (type == 'error') div.style = 'background: red; padding: 10px;';
+    else {
+      if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+      setTimeout(function() {
+        warningBanner.removeChild(div);
+        updateBannerVisibility();
+      }, 5000);
     }
-    bot.setGameScore(query.from.id, parseInt(req.params.score), options,
-        function (err, result) {});
-});
-server.listen(port);
+    updateBannerVisibility();
+  }
+
+  var buildUrl = "Build";
+  var loaderUrl = buildUrl + "/Builds.loader.js";
+  var config = {
+    dataUrl: buildUrl + "/Builds.data",
+    frameworkUrl: buildUrl + "/Builds.framework.js",
+    codeUrl: buildUrl + "/Builds.wasm",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "DefaultCompany",
+    productName: "TestTaskTelegram",
+    productVersion: "0.1",
+    showBanner: unityShowBanner,
+  };
+
+  // By default Unity keeps WebGL canvas render target size matched with
+  // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+  // Set this to false if you want to decouple this synchronization from
+  // happening inside the engine, and you would instead like to size up
+  // the canvas DOM size and WebGL render target sizes yourself.
+  // config.matchWebGLToCanvasSize = false;
+
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    // Mobile device style: fill the whole browser client area with the game canvas:
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+    document.getElementsByTagName('head')[0].appendChild(meta);
+  }
+
+  loadingBar.style.display = "block";
+
+  var script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+    createUnityInstance(canvas, config, (progress) => {
+      progressBarFull.style.width = 100 * progress + "%";
+    }).then((unityInstance) => {
+      unityInstanceRef = unityInstance;
+      loadingBar.style.display = "none";
+    }).catch((message) => {
+      alert(message);
+    });
+  };
+  document.body.appendChild(script);
