@@ -75,6 +75,7 @@ window.addEventListener("load", function () {
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
       unityInstanceRef = unityInstance;
+      unityInstanceRef.SendMessage(InitData, SaveInitData, tg.initData);
       loadingBar.style.display = "none";
     }).catch((message) => {
       alert(message);
