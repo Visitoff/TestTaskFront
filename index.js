@@ -1,6 +1,3 @@
-let tg = window.Telegram.WebApp; 
-console.log("init data");
-console.log(tg.initData);
 window.addEventListener("load", function () {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("ServiceWorker.js");
@@ -75,7 +72,6 @@ window.addEventListener("load", function () {
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
       unityInstanceRef = unityInstance;
-      unityInstanceRef.SendMessage(InitData, SaveInitData, tg.initData);
       loadingBar.style.display = "none";
     }).catch((message) => {
       alert(message);
