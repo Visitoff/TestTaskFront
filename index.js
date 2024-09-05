@@ -1,3 +1,6 @@
+let tg = window.Telegram.WebApp; 
+console.log("init data");
+console.log(tg.initData);
 window.addEventListener("load", function () {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("ServiceWorker.js");
