@@ -73,6 +73,7 @@ window.addEventListener("load", function () {
     }).then((unityInstance) => {
       unityInstanceRef = unityInstance;
       console.log('Instance created',window.Telegram.WebApp);
+      console.log(window.Telegram.WebApp.initData);
       window.unityInstance = unityInstance;
       window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initData));
       loadingBar.style.display = "none";
