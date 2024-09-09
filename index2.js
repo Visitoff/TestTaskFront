@@ -66,9 +66,6 @@ bot.onText(/start|game/, function (msg) {
                                 text: "Start", web_app: {
                                     url: "https://visitoff.github.io/TestTaskFront/"
                                 }
-                            },
-                            {
-                                text: "About", callback_data: "about_us"
                             }]
                     ],
                     resize_keyboard: true,
@@ -76,7 +73,7 @@ bot.onText(/start|game/, function (msg) {
                 }
     };
 
-    bot.sendMessage(msg.chat.id, "I'm a test robot", opts);
+    bot.sendMessage(msg.chat.id, "Hello! Test task.", opts);
 });
 bot.on("callback_query", function (query) {
     if (query.game_short_name !== gameName) {
