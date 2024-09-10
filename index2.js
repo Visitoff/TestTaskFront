@@ -1,12 +1,24 @@
 const express = require("express");
 const path = require("path");
 const TelegramBot = require("node-telegram-bot-api");
+const Agent = require('socks5-https-client/lib/Agent')
 const { Script } = require("vm");
 const TOKEN = "7289862727:AAGt3NWSecR--8VpzvxYXjwV2mUin1ApHwA";
 const server = express();
 const bot = new TelegramBot(TOKEN, {
-    polling: true
+    polling: true,
+    // request: {
+	// 	agentClass: Agent,
+	// 	agentOptions: {
+	// 		keepAlive: true,
+    //         family: 4
+	// 		// If authorization is needed:
+	// 		// socksUsername: process.env.PROXY_SOCKS5_USERNAME,
+	// 		// socksPassword: process.env.PROXY_SOCKS5_PASSWORD
+	// 	}
+	// }
 });
+process.env.NTBA_FIX_319 = 1;
 const port = process.env.PORT || 5000;
 const gameName = "Example";
 const queries = {};
@@ -87,6 +99,7 @@ bot.on("callback_query", function (query) {
         });
     }
 });
+bot.on("polling_error", (msg) => console.log(msg));
 bot.on("inline_query", function (iq) {
     bot.answerInlineQuery(iq.id, [{
         type: "game",
