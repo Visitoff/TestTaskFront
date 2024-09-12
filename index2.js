@@ -22,7 +22,7 @@ process.env.NTBA_FIX_319 = 1;
 const port = process.env.PORT || 5000;
 const gameName = "Example";
 const queries = {};
-server.use(express.static(path.join(__dirname, 'Builds')));
+server.use(express.static(pathnpmтзьjoin(__dirname, 'Builds')));
 // bot.onText((ctx) => ctx.reply('Welcome!!!', {
 //     reply_markup: {
 //         inline_keyboard: [
@@ -48,7 +48,7 @@ server.use(express.static(path.join(__dirname, 'Builds')));
 //     }, function(err) {
 //         console.log(err);
 //     });
-// });
+// }); 
 // bot.onText(/game/, (msg) => msg.reply('Welcome!!!', {
 //     reply_markup: {
 //         inline_keyboard: [
